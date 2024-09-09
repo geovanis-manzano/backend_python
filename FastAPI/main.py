@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 from typing import Union
 
+# Iniciar el server: uvicorn main:app --reload
+# Detener el server: Ctrl + C
+
 app = FastAPI()
 
 @app.get("/")
