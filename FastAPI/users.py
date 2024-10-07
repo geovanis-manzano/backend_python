@@ -31,13 +31,37 @@ async def user(id: int):
 async def user(id: int):
     return search_user_by_id(id)    
     
+@app.post("/user")
+async def create_user(user: User):
+    if type(search_user_by_id(user.id)) == User:
+        return {"error": "El usuario ya existe"}
+    
+    users_list.append(user)
+    return user
+    
+@app.put("/user")
+async def update_user(user: User):
+    if type(search_user_by_id(user.id)) != User:
+        return {"error": "El usuario no existe"}
+
+    for index, saved_user in enumerate(users_list):
+        if saved_user.id == user.id:
+            users_list[index] = user
+            return users_list[index]    
+
+@app.delete("/user/{id}")
+async def delete_user(id: int):
+    if type(search_user_by_id(id)) != User:
+        return {"error": "El usuario no existe"}
+
+    for index, saved_user in enumerate(users_list):
+        if saved_user.id == id:
+            del users_list[index]
+            return {"info": "Usuario eliminado"}
+
 def search_user_by_id(id: int):
     user = filter(lambda user: user.id == id, users_list)
     try:
         return list(user)[0]
     except:
-        return {"error":"No se ha encontrado el usuario"}    
-
-@app.post("/users")
-async def create_user(user: User):
-    return user
+        return {"error": "No se ha encontrado el usuario"}   
